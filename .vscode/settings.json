@@ -1,0 +1,12 @@
+{
+  // Use project-local bash init file so helpers like `y dev` are always available.
+  // This only affects terminals opened from VS Code in this workspace.
+  "terminal.integrated.profiles.windows": {
+    "Git Bash (project)": {
+      "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+      "args": ["--rcfile", "${workspaceFolder}/.bashrc", "-i"],
+      "icon": "terminal-bash"
+    }
+  },
+  "terminal.integrated.defaultProfile.windows": "Git Bash (project)"
+}
