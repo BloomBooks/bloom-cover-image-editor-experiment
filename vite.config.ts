@@ -7,6 +7,8 @@ export default defineConfig(({ mode }) => {
   const pollingInterval = Number(env.VITE_POLLING_INTERVAL ?? 100);
 
   return {
+    // Set base path for GitHub Pages deployment
+    base: '/bloom-cover-image-editor-experiment/',
     plugins: [react()],
     server: {
       port: 5176,
