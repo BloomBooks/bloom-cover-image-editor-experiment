@@ -48,10 +48,8 @@ function pickFirstNonNull<T>(...values: Array<T | null | undefined>): T | null {
 }
 
 export function formatCost(costDollars: number): string {
-	// Requirement example: 0.038723454 -> "3.9 cents, $3.87 per 100"
 	const cents = costDollars * 100;
-	const per100 = costDollars * 100;
-	return `${cents.toFixed(1)} cents, $${per100.toFixed(2)} per 100`;
+	return `${cents.toFixed(1)}¢`;
 }
 
 export function formatDuration(ms: number): string {

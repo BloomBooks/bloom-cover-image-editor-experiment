@@ -9,7 +9,8 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     server: {
-      port: 5174,
+      port: 5176,
+      strictPort: true, // Fail if port is in use, don't auto-pick another
       open: true,
       watch: usePolling ? { usePolling: true, interval: pollingInterval } : undefined,
     },
