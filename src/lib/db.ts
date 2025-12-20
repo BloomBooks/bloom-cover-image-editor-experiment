@@ -483,9 +483,11 @@ export async function seedSampleDataIfEmpty(): Promise<boolean> {
 
   try {
     // Fetch the sample images from the sample directory
+    // Use import.meta.env.BASE_URL to handle GitHub Pages base path
+    const base = import.meta.env.BASE_URL;
     const [inputImage, outputImage] = await Promise.all([
-      fetchImageAsDataUrl("/sample/input.png"),
-      fetchImageAsDataUrl("/sample/output.jpg"),
+      fetchImageAsDataUrl(`${base}sample/input.png`),
+      fetchImageAsDataUrl(`${base}sample/output.jpg`),
     ]);
 
     // Create a sample run record
