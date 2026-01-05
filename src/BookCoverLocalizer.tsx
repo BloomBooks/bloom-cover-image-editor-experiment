@@ -120,18 +120,30 @@ function compilePrompt(
     ? "the main title text"
     : `"${matchText.trim()}"`;
 
+  // Check if the template has placeholders
+  const hasMatchPlaceholder = promptTemplate.includes("{{MATCH_TEXT}}");
+  const hasReplacementPlaceholder = promptTemplate.includes(
+    "{{REPLACEMENT_TEXT}}"
+  );
+
+  // If the template has placeholders, replace them
   let compiled = promptTemplate
     .replaceAll("{{MATCH_TEXT}}", matchDisplay)
     .replaceAll("{{REPLACEMENT_TEXT}}", replacement);
 
-  // If placeholders are missing, append instruction
-  if (
-    !promptTemplate.includes("{{MATCH_TEXT}}") ||
-    !promptTemplate.includes("{{REPLACEMENT_TEXT}}")
-  ) {
+  // ONLY append instruction if the DEFAULT template is being used (has both placeholders)
+  // If user has edited the prompt to remove placeholders, respect that
+  if (hasMatchPlaceholder && hasReplacementPlaceholder) {
+    // Template has placeholders, they were replaced, no need to append
+    return compiled;
+  } else if (!hasMatchPlaceholder && !hasReplacementPlaceholder) {
+    // User has customized the prompt completely - send as-is without modification
+    return compiled;
+  } else {
+    // Only one placeholder present (edge case) - append instruction for safety
     compiled += `\n\nFind and replace ${matchDisplay} with: "${replacement}".`;
+    return compiled;
   }
-  return compiled;
 }
 
 export default function BookCoverLocalizer() {
@@ -1037,12 +1049,12 @@ export default function BookCoverLocalizer() {
                   <div className="p-4 rounded-xl bg-indigo-950/50 border-2 border-indigo-500/30 text-sm space-y-4">
                     <p className="text-indigo-200 leading-relaxed">
                       This app uses AI services to process images. These
-                      services charge about US$0.015 per image. The way you
-                      pay for that is through OpenRouter.ai. If you don't
-                      already have an account, OpenRouter.ai will give you a
-                      $1 free to try it out. After that, you can add credits
-                      and tell it how much of your credits this app is
-                      allowed to use. You can disconnect any time.
+                      services charge about US$0.015 per image. The way you pay
+                      for that is through OpenRouter.ai. If you don't already
+                      have an account, OpenRouter.ai will give you a $1 free to
+                      try it out. After that, you can add credits and tell it
+                      how much of your credits this app is allowed to use. You
+                      can disconnect any time.
                     </p>
                     <button
                       onClick={async () => {
@@ -1067,7 +1079,11 @@ export default function BookCoverLocalizer() {
                 )}
 
                 {/* Match Text */}
-                <div className={`text-sm font-medium ${isEditable ? "text-slate-300" : "text-slate-500"}`}>
+                <div
+                  className={`text-sm font-medium ${
+                    isEditable ? "text-slate-300" : "text-slate-500"
+                  }`}
+                >
                   Find text
                 </div>
                 <input
@@ -1096,7 +1112,11 @@ export default function BookCoverLocalizer() {
                 </datalist>
 
                 {/* Replacement Text */}
-                <div className={`text-sm font-medium ${isEditable ? "text-slate-300" : "text-slate-500"}`}>
+                <div
+                  className={`text-sm font-medium ${
+                    isEditable ? "text-slate-300" : "text-slate-500"
+                  }`}
+                >
                   Replace with
                 </div>
                 <textarea
@@ -1216,7 +1236,11 @@ export default function BookCoverLocalizer() {
 
               {/* Bottom section - Model and Prompt */}
               <div className="mt-auto pt-4 space-y-3">
-                <div className={`text-sm font-medium mb-2 ${isEditable ? "text-slate-300" : "text-slate-500"}`}>
+                <div
+                  className={`text-sm font-medium mb-2 ${
+                    isEditable ? "text-slate-300" : "text-slate-500"
+                  }`}
+                >
                   Model
                 </div>
                 <Select
@@ -1271,8 +1295,12 @@ export default function BookCoverLocalizer() {
                             style={{
                               fontSize: "10px",
                               color: meta.recommended
-                                ? (isEditable ? "rgb(74 222 128)" : "rgb(100 116 139)") // green-400 or slate-500
-                                : (isEditable ? "rgb(251 191 36)" : "rgb(100 116 139)"), // amber-400 or slate-500
+                                ? isEditable
+                                  ? "rgb(74 222 128)"
+                                  : "rgb(100 116 139)" // green-400 or slate-500
+                                : isEditable
+                                ? "rgb(251 191 36)"
+                                : "rgb(100 116 139)", // amber-400 or slate-500
                               marginTop: "2px",
                             }}
                           >
@@ -1361,7 +1389,11 @@ export default function BookCoverLocalizer() {
                 )}
 
                 <div className="flex items-center justify-between pt-3">
-                  <div className={`text-sm font-medium ${isEditable ? "text-slate-300" : "text-slate-500"}`}>
+                  <div
+                    className={`text-sm font-medium ${
+                      isEditable ? "text-slate-300" : "text-slate-500"
+                    }`}
+                  >
                     Prompt
                   </div>
                   {isEditable && (
